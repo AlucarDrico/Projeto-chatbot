@@ -10,7 +10,7 @@
         html { scroll-behavior: smooth; }
         .modal-active { overflow: hidden; }
     </style>
-     <link rel="shortcut icon" href="/img/cafe.png" type="image/x-icon">
+     <link rel="shortcut icon" href="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=32&q=80" type="image/x-icon">
 </head>
 <body class="bg-amber-50 text-amber-900 font-sans antialiased">
 
@@ -101,11 +101,44 @@
         <i class="fa-brands fa-whatsapp text-2xl"></i>
     </a>
 
-    <button id="cart-float-btn" onclick="toggleCartDrawer()" class="fixed bottom-6 right-6 bg-amber-600 hover:bg-amber-700 text-white p-4 rounded-full shadow-2xl z-40 flex items-center justify-center transition-transform hover:scale-110">
-        <i class="fa-solid fa-cart-shopping text-2xl"></i>
-        <span id="cart-count-float" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center shadow-md">0</span>
-    </button>
+    <!-- Botões Flutuantes -->
+    <div class="fixed bottom-6 right-6 flex flex-col gap-4 z-40">
+        <button id="cart-float-btn" onclick="toggleCartDrawer()" class="bg-amber-600 hover:bg-amber-700 text-white p-4 rounded-full shadow-2xl flex items-center justify-center transition-transform hover:scale-110 relative">
+            <i class="fa-solid fa-cart-shopping text-2xl"></i>
+            <span id="cart-count-float" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center shadow-md">0</span>
+        </button>
 
+        <button id="chatbot-toggle-btn" onclick="toggleChatbot()" class="bg-amber-800 hover:bg-amber-900 text-white p-4 rounded-full shadow-2xl flex items-center justify-center transition-transform hover:scale-110 relative">
+            <i class="fa-solid fa-comments text-2xl"></i>
+        </button>
+    </div>
+
+    <!-- Interface do Chatbot Doce Mania -->
+    <div id="chatbot-window" class="hidden fixed bottom-24 right-6 w-80 sm:w-96 h-[450px] bg-white rounded-2xl shadow-2xl z-50 border border-amber-200 flex flex-col overflow-hidden">
+        <!-- Cabeçalho -->
+        <div class="bg-amber-800 text-white p-4 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-cookie-bite text-xl"></i>
+                <span class="font-bold">Doce Mania</span>
+            </div>
+            <button onclick="toggleChatbot()" class="text-white hover:text-amber-200 text-xl font-bold">&times;</button>
+        </div>
+        
+        <!-- Histórico de Mensagens -->
+        <div id="chatbot-messages" class="flex-1 p-4 overflow-y-auto space-y-3 bg-amber-50/35 text-sm">
+            <!-- Mensagens dinâmicas -->
+        </div>
+
+        <!-- Área de Input -->
+        <div id="chatbot-input-container" class="p-3 border-t border-amber-100 bg-white flex gap-2">
+            <input type="text" id="chatbot-input" placeholder="Digite aqui..." class="flex-1 px-3 py-2 border rounded-xl focus:outline-amber-600 text-sm" onkeydown="if(event.key === 'Enter') enviarMensagemChatbot()">
+            <button onclick="enviarMensagemChatbot()" class="bg-amber-700 hover:bg-amber-800 text-white px-3 py-2 rounded-xl text-sm font-bold transition">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Gaveta de Carrinho -->
     <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
         <div class="p-4 border-b border-amber-100 flex justify-between items-center bg-amber-50">
             <h3 class="font-bold text-lg text-amber-900"><i class="fa-solid fa-cart-shopping mr-2"></i>Seu Pedido</h3>
@@ -174,16 +207,18 @@
         </div>
     </footer>
 
+    <!-- Modal de Abandono de Página -->
     <div id="exit-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white rounded-3xl p-8 max-w-md w-full text-center relative shadow-2xl border-4 border-amber-400">
             <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
             <span class="text-5xl block mb-2">🎁</span>
-            <h3 class="text-2xl font-black text-amber-800 mb-2">Por que o concorrente ?</h3>
+            <h3 class="text-2xl font-black text-amber-800 mb-2">Vai embora de barriga vazia?</h3>
             <p class="text-gray-600 mb-6">Preparamos um mimo especial para você. Use o cupom <span class="bg-amber-100 text-amber-800 font-mono font-bold px-2 py-1 rounded">DONNA10</span> e ganhe <strong>10% de desconto</strong> no seu primeiro pedido!</p>
             <button onclick="closeModal()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold px-6 py-3 rounded-full w-full transition">Quero aproveitar!</button>
         </div>
     </div>
 
+    <!-- VLibras -->
     <div vw class="enabled">
         <div vw-access-button class="active"></div>
         <div vw-plugin-wrapper>
@@ -196,12 +231,12 @@
     </script>
 
     <script>
-        // Dados dos Produtos
+        // Dados dos Produtos (Imagens locais substituídas por imagens reais de alta definição)
         const salgados = [
             { id: 1, nome: "Coxinha de Frango", preco: 6.50, desc: "Crocante por fora, super recheada com frango desfiado e catupiry.", img: "https://images.unsplash.com/photo-1626132647523-66f5bf380027?auto=format&fit=crop&w=400&q=80" },
             { id: 2, nome: "Bolinha de Queijo", preco: 6.00, desc: "Massa leve e crocante recheada com muito queijo muzzarela derretido.", img: "https://images.unsplash.com/photo-1541532713592-79a0317b6b77?auto=format&fit=crop&w=400&q=80" },
             { id: 3, nome: "Quibe Tradicional", preco: 6.50, desc: "Temperado com hortelã fresca e recheio de carne perfeitamente temperada.", img: "https://images.unsplash.com/photo-1608897013039-887f21d8c804?auto=format&fit=crop&w=400&q=80" },
-            { id: 4, nome: "Empada de Palmito", preco: 7.00, desc: "Massa podre que derrete na boca com recheio cremoso de palmito.", img: "/img/images.jpg" },
+            { id: 4, nome: "Empada de Palmito", preco: 7.00, desc: "Massa podre que derrete na boca com recheio cremoso de palmito.", img: "https://images.unsplash.com/photo-1608039829572-78524f79c4c7?auto=format&fit=crop&w=400&q=80" },
             { id: 5, nome: "Rissole de Presunto e Q.", preco: 6.00, desc: "Clássico empanado fofinho recheado com presunto e queijo cremoso.", img: "https://images.unsplash.com/photo-1585325701956-60dd9c8553bc?auto=format&fit=crop&w=400&q=80" },
             { id: 6, nome: "Folhado de Frango", preco: 8.00, desc: "Massa folhada crocante e dourada com recheio cremoso de frango.", img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=400&q=80" },
             { id: 7, nome: "Esfiha de Carne", preco: 6.50, desc: "Massa macia assada na hora recheada com carne moída de primeira.", img: "https://images.unsplash.com/photo-1514517604298-cf80e0fb7f1e?auto=format&fit=crop&w=400&q=80" },
@@ -214,7 +249,7 @@
             { id: 11, nome: "Fatia de Bolo Prestígio", preco: 12.00, desc: "Massa de chocolate molhadinha com recheio cremoso de coco.", img: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=400&q=80" },
             { id: 12, nome: "Pudim de Leite Condensado", preco: 8.50, desc: "Lisinho, cremoso e com aquela calda de caramelo perfeita.", img: "https://images.unsplash.com/photo-1528975604071-b4dc52a2d18c?auto=format&fit=crop&w=400&q=80" },
             { id: 13, nome: "Cupcake de Baunilha", preco: 9.00, desc: "Bolinho macio com cobertura generosa de buttercream de baunilha.", img: "https://images.unsplash.com/photo-1519869325930-281384150729?auto=format&fit=crop&w=400&q=80" },
-            { id: 14, nome: "Bomba de Chocolate", preco: 10.00, desc: "Massa leve recheada com creme de confeiteiro e cobertura de chocolate.", img: "/img/bomba choco.jpg" },
+            { id: 14, nome: "Bomba de Chocolate", preco: 10.00, desc: "Massa leve recheada com creme de confeiteiro e cobertura de chocolate.", img: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=400&q=80" },
             { id: 15, nome: "Torta de Limão", preco: 11.00, desc: "Base crocante, creme azedinho de limão e merengue tostado por cima.", img: "https://images.unsplash.com/photo-1519915028121-7d3463d20b13?auto=format&fit=crop&w=400&q=80" },
             { id: 16, nome: "Quindim Tradicional", preco: 7.00, desc: "Doce dourado à base de gemas, açúcar e muito coco ralado.", img: "https://images.unsplash.com/photo-1551446591-142875a901a1?auto=format&fit=crop&w=400&q=80" }
         ];
@@ -287,7 +322,6 @@
             }
             atualizarCarrinho();
             
-            // Abre o carrinho flutuante automaticamente no primeiro item adicionado
             if (carrinho.reduce((acc, i) => acc + i.qtd, 0) === 1) {
                 toggleCartDrawer();
             }
@@ -308,7 +342,6 @@
             const container = document.getElementById('carrinho-itens-drawer');
             const totalItens = carrinho.reduce((acc, i) => acc + i.qtd, 0);
             
-            // Atualiza os contadores
             document.getElementById('cart-count-float').innerText = totalItens;
 
             if (carrinho.length === 0) {
@@ -336,8 +369,8 @@
                 `;
             }).join('');
 
-            document.getElementById('subtotal-val').innerText = `R$ ${subtotal.toFixed(2)}`;
-            document.getElementById('total-val').innerText = `R$ ${(subtotal + valorFrete).toFixed(2)}`;
+            document.getElementById('subtotal-val').innerText = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+            document.getElementById('total-val').innerText = `R$ ${(subtotal + valorFrete).toFixed(2).replace('.', ',')}`;
         }
 
         // Frete e Localização
@@ -355,8 +388,8 @@
                 </div>
             `;
             
-            valorFrete = Math.floor(Math.random() * 10) + 5; // Simulação de frete dinâmico
-            document.getElementById('frete-val').innerText = `R$ ${valorFrete.toFixed(2)}`;
+            valorFrete = Math.floor(Math.random() * 10) + 5; 
+            document.getElementById('frete-val').innerText = `R$ ${valorFrete.toFixed(2).replace('.', ',')}`;
             atualizarCarrinho();
         }
 
@@ -373,13 +406,11 @@
             texto += `\nFrete: R$ ${valorFrete.toFixed(2)}`;
             texto += `\n*Total: R$ ${(carrinho.reduce((acc, i) => acc + (i.preco * i.qtd), 0) + valorFrete).toFixed(2)}*`;
             
-            // Seu número de celular configurado
             const numeroWhatsApp = "5511981714310"; 
-            
             window.open(`https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(texto)}`, '_blank');
         }
 
-        // Modal de Saída
+        // Modal de Saída (Corrigida a chamada para acionar só uma vez)
         let modalMostrado = false;
         document.addEventListener('mouseleave', (e) => {
             if (e.clientY < 20 && !modalMostrado) {
@@ -393,6 +424,124 @@
             document.getElementById('exit-modal').classList.add('hidden');
             document.body.classList.remove('modal-active');
         }
+
+        /* --- SCRIPT DO CHATBOT DOCE MANIA --- */
+        let chatbotNome = "";
+        let chatbotEtapa = "inicio"; 
+
+        function toggleChatbot() {
+            const windowChat = document.getElementById('chatbot-window');
+            windowChat.classList.toggle('hidden');
+            
+            const mensagensDiv = document.getElementById('chatbot-messages');
+            if (mensagensDiv.innerHTML.trim() === "") {
+                reiniciarChatbot();
+            }
+        }
+
+        function reiniciarChatbot() {
+            chatbotNome = "";
+            chatbotEtapa = "inicio";
+            const mensagensDiv = document.getElementById('chatbot-messages');
+            mensagensDiv.innerHTML = "";
+            adicionarMensagemChat("Doce Mania", "Olá! Sou a assistente Doce Mania. Qual é o seu nome?");
+        }
+
+        function adicionarMensagemChat(autor, texto) {
+            const mensagensDiv = document.getElementById('chatbot-messages');
+            const isBot = autor === "Doce Mania";
+            
+            const msgHtml = `
+                <div class="flex flex-col ${isBot ? 'items-start' : 'items-end'}">
+                    <span class="text-[10px] text-gray-500 mb-0.5">${autor}</span>
+                    <div class="${isBot ? 'bg-amber-100 text-amber-950' : 'bg-amber-700 text-white'} p-2.5 rounded-2xl max-w-[85%] whitespace-pre-line shadow-sm">
+                        ${texto}
+                    </div>
+                </div>
+            `;
+            mensagensDiv.innerHTML += msgHtml;
+            mensagensDiv.scrollTop = mensagensDiv.scrollHeight;
+        }
+
+        function processarEtapa(inputVal) {
+            if (chatbotEtapa === "inicio") {
+                if (!inputVal.trim()) return;
+                chatbotNome = inputVal.trim();
+                adicionarMensagemChat("Doce Mania", `Olá ${chatbotNome}!`);
+                chatbotEtapa = "menu";
+                mostrarMenuPrincipal();
+            } 
+            else if (chatbotEtapa === "menu") {
+                const opcao = inputVal.trim();
+                if (opcao === "1") {
+                    chatbotEtapa = "produtos";
+                    mostrarMenuProdutos();
+                } else if (opcao === "2") {
+                    adicionarMensagemChat("Doce Mania", "Redirecionando para o WhatsApp...");
+                    setTimeout(() => {
+                        window.open("https://wa.me/5511981714310?text=Ol%C3%A1%21%20Gostaria%20de%20falar%20com%20um%20representante%20da%20Donna%20Cidinha.", '_blank');
+                    }, 1000);
+                } else if (opcao === "3") {
+                    adicionarMensagemChat("Doce Mania", "Abrindo aplicativo de e-mail...");
+                    setTimeout(() => {
+                        window.open("mailto:email@gmail.com?subject=Contato%20via%20Doce%20Mania&body=Olá,%20gostaria%20de...", '_self');
+                    }, 1000);
+                } else if (opcao === "4") {
+                    adicionarMensagemChat("Doce Mania", `Até mais, ${chatbotNome}! Volte sempre.`);
+                    setTimeout(() => {
+                        reiniciarChatbot();
+                    }, 5000);
+                } else {
+                    adicionarMensagemChat("Doce Mania", "Opção inválida! Escolha um número de 1 a 4.");
+                }
+            }
+            else if (chatbotEtapa === "produtos") {
+                const opcao = inputVal.trim();
+                if (opcao === "1") {
+                    let lista = "Salgados Donna Cidinha:\n\n";
+                    salgados.forEach(s => {
+                        lista += `• ${s.nome} - R$ ${s.preco.toFixed(2).replace('.', ',')}\n`;
+                    });
+                    lista += "\nDigite 'voltar' para ir ao menu principal.";
+                    adicionarMensagemChat("Doce Mania", lista);
+                } else if (opcao === "2") {
+                    let lista = "Doces Donna Cidinha:\n\n";
+                    doces.forEach(d => {
+                        lista += `• ${d.nome} - R$ ${d.preco.toFixed(2).replace('.', ',')}\n`;
+                    });
+                    lista += "\nDigite 'voltar' para ir ao menu principal.";
+                    adicionarMensagemChat("Doce Mania", lista);
+                } else if (opcao.toLowerCase() === "voltar") {
+                    chatbotEtapa = "menu";
+                    mostrarMenuPrincipal();
+                } else {
+                    adicionarMensagemChat("Doce Mania", "Opção inválida! Escolha 1 para Salgados, 2 para Doces, ou digite 'voltar'.");
+                }
+            }
+        }
+
+        function mostrarMenuPrincipal() {
+            const menuTxt = `Escolha uma opção:\n\n1 - Produtos\n2 - Falar com um representante\n3 - Enviar E-mail\n4 - Sair`;
+            adicionarMensagemChat("Doce Mania", menuTxt);
+        }
+
+        function mostrarMenuProdutos() {
+            const menuProd = `Qual produto deseja ver?\n\n1 - Salgados\n2 - Doces\n\nOu digite 'voltar'.`;
+            adicionarMensagemChat("Doce Mania", menuProd);
+        }
+
+        function enviarMensagemChatbot() {
+            const input = document.getElementById('chatbot-input');
+            const userText = input.value;
+            if (!userText.trim()) return;
+
+            adicionarMensagemChat("Você", userText);
+            input.value = "";
+
+            setTimeout(() => {
+                processarEtapa(userText);
+            }, 600);
+        }
     </script>
 </body>
-</html>class
+</html>
